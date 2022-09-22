@@ -1,0 +1,2 @@
+module rick.and.morty {
+}
