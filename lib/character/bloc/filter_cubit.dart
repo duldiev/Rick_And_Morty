@@ -1,5 +1,7 @@
+// ignore_for_file: depend_on_referenced_packages
+
+import 'package:rick_and_morty/character/enums.dart';
 import 'package:bloc/bloc.dart';
-import 'package:rick_and_morty/character/bloc/character_event.dart';
 
 class SpeciesCubit extends Cubit<Species> {
   SpeciesCubit() : super(Species.any);

@@ -1,16 +1,11 @@
 import 'package:equatable/equatable.dart';
+import 'package:rick_and_morty/character/enums.dart';
 
 abstract class CharacterEvent extends Equatable {
   const CharacterEvent();
   @override
   List<Object> get props => [];
 }
-
-enum Species { any, human, alien, humanoid, poopybutthole, cronenberg, animal }
-
-enum Gender { any, male, female, genderless, unknown }
-
-enum Status { any, alive, dead, unknown }
 
 class CharacterFetchEvent extends CharacterEvent {
   final Species species;

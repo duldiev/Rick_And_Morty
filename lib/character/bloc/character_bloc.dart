@@ -5,6 +5,7 @@ import 'package:rick_and_morty/character/bloc/character_state.dart';
 import 'package:rick_and_morty/character/bloc/character_event.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:rick_and_morty/character/enums.dart';
 
 const throttleDuration = Duration(milliseconds: 100);
 
@@ -13,6 +14,8 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
     return droppable<E>().call(events.throttle(duration), mapper);
   };
 }
+
+// BLOC
 
 class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
   CharacterBloc() : super(const CharacterState()) {
