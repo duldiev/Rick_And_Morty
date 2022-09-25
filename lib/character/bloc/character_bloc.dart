@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_and_morty/character/models/character.dart';
@@ -17,7 +15,6 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
-
   CharacterBloc() : super(const CharacterState()) {
     on<CharacterFetchEvent>(
       _onCharacterFetched,
@@ -37,7 +34,14 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
           hasReachedMax: false,
         ));
       }
-      final characters = await _fetchCharacter(state.characters.length ~/ 20 + 1);
+
+      final characters = await _fetchCharacter(
+        state.characters.length ~/ 20 + 1,
+        event.species,
+        event.gender,
+        event.status,
+      );
+
       emit(characters.isEmpty
           ? state.copyWith(hasReachedMax: true)
           : state.copyWith(
@@ -50,8 +54,26 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
     }
   }
 
-  Future<List<CharacterModel>> _fetchCharacter([int page = 1]) async {
-    final response = await Dio().get("https://rickandmortyapi.com/api/character?page=$page");
+  Future<List<CharacterModel>> _fetchCharacter([
+    int page = 1,
+    Species species = Species.any,
+    Gender gender = Gender.any,
+    Status status = Status.any,
+  ]) async {
+    Dio dio = Dio(BaseOptions(
+      baseUrl: "https://rickandmortyapi.com/api",
+      method: 'GET',
+    ));
+    final response = await dio.request(
+      "/character",
+      queryParameters: {
+        'page': page,
+        'status': status == Status.any ? '' : status.name,
+        'gender': gender == Gender.any ? '' : gender.name,
+        'species': species == Species.any ? '' : species.name,
+      },
+    );
+    print(response.realUri);
     if (response.statusCode == 200) {
       final results = response.data['results'] as List;
       return results.map((dynamic json) {
@@ -59,6 +81,6 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
         return CharacterModel.fromJson(map);
       }).toList();
     }
-    throw Exception('error fetching posts');
+    throw Exception('error fetching character');
   }
 }
