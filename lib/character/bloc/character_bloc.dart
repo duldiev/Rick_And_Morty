@@ -23,6 +23,13 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
       _onCharacterFetched,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<CharacterResetEvet>(
+      _onRemoveAll,
+    );
+  }
+
+  void _onRemoveAll(CharacterResetEvet event, Emitter<CharacterState> emit) {
+    emit(const CharacterRemoveAll());
   }
 
   Future<void> _onCharacterFetched(
@@ -30,7 +37,12 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
     try {
       if (state.hasReachedMax) return;
       if (state.status == CharacterStatus.initial) {
-        final characters = await _fetchCharacter();
+        final characters = await _fetchCharacter(
+          1,
+          event.species,
+          event.gender,
+          event.status,
+        );
         return emit(state.copyWith(
           status: CharacterStatus.success,
           characters: characters,
@@ -76,7 +88,6 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
         'species': species == Species.any ? '' : species.name,
       },
     );
-    print(response.realUri);
     if (response.statusCode == 200) {
       final results = response.data['results'] as List;
       return results.map((dynamic json) {

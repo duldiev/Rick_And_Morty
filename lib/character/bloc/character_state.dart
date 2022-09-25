@@ -34,3 +34,15 @@ class CharacterState extends Equatable {
   @override
   List<Object> get props => [status, characters, hasReachedMax];
 }
+
+class CharacterRemoveAll extends CharacterState {
+  const CharacterRemoveAll()
+      : super(
+          status: CharacterStatus.initial,
+          characters: const <CharacterModel>[],
+          hasReachedMax: false,
+        );
+
+  @override
+  List<Object> get props => [status, characters, hasReachedMax];
+}

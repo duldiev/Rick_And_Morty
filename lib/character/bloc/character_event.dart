@@ -21,3 +21,10 @@ class CharacterFetchEvent extends CharacterEvent {
   @override
   List<Object> get props => [species, gender, status];
 }
+
+class CharacterResetEvet extends CharacterEvent {
+  const CharacterResetEvet();
+
+  @override
+  List<Object> get props => [];
+}
