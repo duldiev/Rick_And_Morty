@@ -70,6 +70,7 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
       if (state.status == CharacterStatus.initial) {
         final characters = await _fetchCharacter(
           1,
+          event.name,
           event.species,
           event.gender,
           event.status,
@@ -83,6 +84,7 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
 
       final characters = await _fetchCharacter(
         state.characters.length ~/ 20 + 1,
+        event.name,
         event.species,
         event.gender,
         event.status,
@@ -102,6 +104,7 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
 
   Future<List<CharacterModel>> _fetchCharacter([
     int page = 1,
+    String name = "",
     Species species = Species.any,
     Gender gender = Gender.any,
     Status status = Status.any,
@@ -114,6 +117,7 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
       "/character",
       queryParameters: {
         'page': page,
+        'name': name,
         'status': status == Status.any ? '' : status.name,
         'gender': gender == Gender.any ? '' : gender.name,
         'species': species == Species.any ? '' : species.name,

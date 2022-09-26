@@ -110,6 +110,9 @@ class _LocationViewState extends State<LocationView> {
                           _ingoreBackWidgets = true;
                         });
                       },
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: Size(0, 50),
+                      ),
                       child: Row(
                         children: const [
                           Expanded(
@@ -279,10 +282,11 @@ class _LocationViewState extends State<LocationView> {
                         });
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
+                        backgroundColor: Colors.blue,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+                          borderRadius: BorderRadius.circular(5.0),
                         ),
+                        fixedSize: Size(0, 40),
                       ),
                       child: const Text("APPLY"),
                     ),

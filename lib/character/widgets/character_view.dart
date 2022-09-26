@@ -1,16 +1,20 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stream_transform/stream_transform.dart';
+
 import 'package:rick_and_morty/character/bloc/character_bloc.dart';
 import 'package:rick_and_morty/character/bloc/character_event.dart';
 import 'package:rick_and_morty/character/bloc/character_state.dart';
 import 'package:rick_and_morty/character/bloc/episode/episode_bloc.dart';
 import 'package:rick_and_morty/character/bloc/episode/episode_event.dart';
-import 'package:rick_and_morty/constants.dart';
-import 'package:rick_and_morty/filter_cubit.dart';
-import 'package:rick_and_morty/enums.dart';
 import 'package:rick_and_morty/character/widgets/character_detail_page.dart';
+import 'package:rick_and_morty/constants.dart';
+import 'package:rick_and_morty/enums.dart';
+import 'package:rick_and_morty/filter_cubit.dart';
 import 'package:rick_and_morty/reusable_widgets/character_card.dart';
 
 double filterPosition = Consts.positions.ATTENTION_INVISIBLE;
@@ -24,8 +28,12 @@ class CharacterView extends StatefulWidget {
 
 class _CharacterViewState extends State<CharacterView> {
   final TextEditingController _controller = TextEditingController();
-
   bool _ingoreBackWidgets = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,15 +87,27 @@ class _CharacterViewState extends State<CharacterView> {
                           ),
                           Expanded(
                             flex: 6,
-                            child: TextField(
-                              controller: _controller,
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "Filter by name...",
-                              ),
-                              style: const TextStyle(
-                                fontSize: 16,
-                              ),
+                            child: BlocBuilder<CharacterBloc, CharacterState>(
+                              builder: (context, state) {
+                                return TextField(
+                                  controller: _controller,
+                                  decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: "Filter by name...",
+                                  ),
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                  onChanged: (value) {
+                                    context
+                                        .read<CharacterBloc>()
+                                        .add(CharacterResetEvet());
+                                    context
+                                        .read<CharacterBloc>()
+                                        .add(CharacterFetchEvent(name: value));
+                                  },
+                                );
+                              },
                             ),
                           ),
                         ],
@@ -109,6 +129,9 @@ class _CharacterViewState extends State<CharacterView> {
                             _ingoreBackWidgets = true;
                           });
                         },
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: Size(0, 50),
+                        ),
                         child: Row(
                           children: const [
                             Expanded(
@@ -139,8 +162,8 @@ class _CharacterViewState extends State<CharacterView> {
           ),
           AnimatedPositioned(
             top: filterPosition,
-            left: MediaQuery.of(context).size.width * 0.2,
-            right: MediaQuery.of(context).size.width * 0.2,
+            left: MediaQuery.of(context).size.width * 0.1,
+            right: MediaQuery.of(context).size.width * 0.1,
             duration: const Duration(milliseconds: 500),
             curve: Curves.easeInBack,
             child: Container(
@@ -325,8 +348,9 @@ class _CharacterViewState extends State<CharacterView> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
+                            borderRadius: BorderRadius.circular(5.0),
                           ),
+                          fixedSize: Size(0, 40),
                         ),
                         child: const Text("APPLY"),
                       ),
