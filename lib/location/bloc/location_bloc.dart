@@ -39,6 +39,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       if (state.status == LocationStatus.initial) {
         final locations = await _fetchLocation(
           1,
+          event.name,
           event.type,
           event.dimension,
         );
@@ -51,6 +52,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
 
       final locations = await _fetchLocation(
         state.locations.length ~/ 20 + 1,
+        event.name,
         event.type,
         event.dimension,
       );
@@ -69,6 +71,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
 
   Future<List<LocationModel>> _fetchLocation([
     int page = 1,
+    String name = "",
     Type type = Type.any,
     Dimension dimension = Dimension.any,
   ]) async {
@@ -80,6 +83,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       "/location",
       queryParameters: {
         'page': page,
+        'name': name,
         'type': type == Type.any ? '' : type.name,
         'dimension': dimension == Dimension.any ? '' : _rename(dimension),
       },

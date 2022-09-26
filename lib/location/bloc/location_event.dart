@@ -8,10 +8,12 @@ abstract class LocationEvent extends Equatable {
 }
 
 class LocationFetchEvent extends LocationEvent {
+  final String name;
   final Type type;
   final Dimension dimension;
 
   const LocationFetchEvent({
+    this.name = "",
     this.type = Type.any,
     this.dimension = Dimension.any,
   });

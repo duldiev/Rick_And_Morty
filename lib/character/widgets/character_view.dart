@@ -99,12 +99,24 @@ class _CharacterViewState extends State<CharacterView> {
                                     fontSize: 16,
                                   ),
                                   onChanged: (value) {
+                                    Species speciesPicked =
+                                        context.read<SpeciesCubit>().state;
+                                    Gender genderPicked =
+                                        context.read<GenderCubit>().state;
+                                    Status statusPicked =
+                                        context.read<StatusCubit>().state;
+
                                     context
                                         .read<CharacterBloc>()
                                         .add(CharacterResetEvet());
                                     context
                                         .read<CharacterBloc>()
-                                        .add(CharacterFetchEvent(name: value));
+                                        .add(CharacterFetchEvent(
+                                          name: value,
+                                          species: speciesPicked,
+                                          gender: genderPicked,
+                                          status: statusPicked,
+                                        ));
                                   },
                                 );
                               },
@@ -445,7 +457,7 @@ class CharacterListView extends StatelessWidget {
                         );
                       },
                     ),
-                    if (state.hasReachedMax) ...[
+                    if (!state.hasReachedMax) ...[
                       Padding(
                         padding: const EdgeInsets.only(
                           top: 40,

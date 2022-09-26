@@ -90,6 +90,22 @@ class _LocationViewState extends State<LocationView> {
                             style: const TextStyle(
                               fontSize: 16,
                             ),
+                            onChanged: ((value) {
+                              Type typePicked = context.read<TypeCubit>().state;
+                              Dimension dimensionPicked =
+                                  context.read<DimensionCubit>().state;
+
+                              context
+                                  .read<LocationBloc>()
+                                  .add(LocationResetEvet());
+                              context
+                                  .read<LocationBloc>()
+                                  .add(LocationFetchEvent(
+                                    name: value,
+                                    type: typePicked,
+                                    dimension: dimensionPicked,
+                                  ));
+                            }),
                           ),
                         ),
                       ],
@@ -375,40 +391,42 @@ class LocationListView extends StatelessWidget {
                         );
                       },
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        top: 40,
-                        bottom: 20,
-                        left: 100,
-                        right: 100,
-                      ),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Type typePicked = context.read<TypeCubit>().state;
-                          Dimension dimensionPicked =
-                              context.read<DimensionCubit>().state;
-
-                          context.read<LocationBloc>().add(
-                                LocationFetchEvent(
-                                  type: typePicked,
-                                  dimension: dimensionPicked,
-                                ),
-                              );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          fixedSize: const Size.fromHeight(40),
-                          backgroundColor: Colors.lightBlueAccent,
+                    if (!state.hasReachedMax) ...[
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 40,
+                          bottom: 20,
+                          left: 100,
+                          right: 100,
                         ),
-                        child: const Text(
-                          "Load more",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Type typePicked = context.read<TypeCubit>().state;
+                            Dimension dimensionPicked =
+                                context.read<DimensionCubit>().state;
+
+                            context.read<LocationBloc>().add(
+                                  LocationFetchEvent(
+                                    type: typePicked,
+                                    dimension: dimensionPicked,
+                                  ),
+                                );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            fixedSize: const Size.fromHeight(40),
+                            backgroundColor: Colors.lightBlueAccent,
+                          ),
+                          child: const Text(
+                            "Load more",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ],
                 );
               case LocationStatus.initial:
