@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_and_morty/character/bloc/character_bloc.dart';
 import 'package:rick_and_morty/character/bloc/character_event.dart';
 import 'package:rick_and_morty/character/bloc/character_state.dart';
+import 'package:rick_and_morty/character/bloc/episode/episode_bloc.dart';
+import 'package:rick_and_morty/character/bloc/episode/episode_event.dart';
 import 'package:rick_and_morty/constants.dart';
 import 'package:rick_and_morty/filter_cubit.dart';
 import 'package:rick_and_morty/enums.dart';
@@ -394,8 +396,16 @@ class CharacterListView extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => CharacterDetailPage(
-                                  character: state.characters[index],
+                                builder: (context) => BlocProvider(
+                                  create: ((context) => EpisodeBloc()
+                                    ..add(
+                                      EpisodeFetchEvent(
+                                        urls: state.characters[index].episode,
+                                      ),
+                                    )),
+                                  child: CharacterDetailPage(
+                                    character: state.characters[index],
+                                  ),
                                 ),
                               ),
                             );

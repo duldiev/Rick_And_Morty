@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 
 class EpisodeCard extends StatelessWidget {
@@ -7,7 +9,11 @@ class EpisodeCard extends StatelessWidget {
   final void Function() onTap;
 
   const EpisodeCard({
-    Key? key, required this.number, required this.title, required this.releaseDate, required this.onTap,
+    Key? key,
+    required this.number,
+    required this.title,
+    required this.releaseDate,
+    required this.onTap,
   }) : super(key: key);
 
   @override
@@ -28,7 +34,9 @@ class EpisodeCard extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                SizedBox(height: 8,),
+                SizedBox(
+                  height: 8,
+                ),
                 Text(
                   title,
                   style: TextStyle(
@@ -36,7 +44,9 @@ class EpisodeCard extends StatelessWidget {
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-                SizedBox(height: 8,),
+                SizedBox(
+                  height: 8,
+                ),
                 Text(
                   releaseDate,
                   style: TextStyle(

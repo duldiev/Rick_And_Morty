@@ -355,9 +355,8 @@ class LocationListView extends StatelessWidget {
                                 builder: (context) => BlocProvider(
                                   create: ((context) => CharacterBloc()
                                     ..add(
-                                      CharacterFetchResidentsEvent(
-                                        residentsURLs:
-                                            state.locations[index].residents,
+                                      ResidentFetchEvent(
+                                        urls: state.locations[index].residents,
                                       ),
                                     )),
                                   child: LocationDetailPage(

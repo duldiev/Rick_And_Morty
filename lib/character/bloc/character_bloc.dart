@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_and_morty/character/models/character.dart';
 import 'package:rick_and_morty/character/bloc/character_state.dart';
 import 'package:rick_and_morty/character/bloc/character_event.dart';
+import 'package:rick_and_morty/character/models/episode.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:rick_and_morty/enums.dart';
@@ -27,13 +28,13 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
       _onRemoveAll,
       transformer: throttleDroppable(throttleDuration),
     );
-    on<CharacterFetchResidentsEvent>(_onResidentsFetched);
+    on<ResidentFetchEvent>(_onResidentsFetched);
   }
 
   Future<void> _onResidentsFetched(
-      CharacterFetchResidentsEvent event, Emitter<CharacterState> emit) async {
+      ResidentFetchEvent event, Emitter<CharacterState> emit) async {
     try {
-      final residents = await _fetchResident(event.residentsURLs);
+      final residents = await _fetchResident(event.urls);
       emit(state.copyWith(
         status: CharacterStatus.success,
         characters: residents,

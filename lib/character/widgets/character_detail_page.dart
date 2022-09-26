@@ -1,6 +1,11 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rick_and_morty/character/bloc/character_bloc.dart';
+import 'package:rick_and_morty/character/bloc/character_state.dart';
+import 'package:rick_and_morty/character/bloc/episode/episode_bloc.dart';
+import 'package:rick_and_morty/character/bloc/episode/episode_state.dart';
 import 'package:rick_and_morty/character/models/character.dart';
 import 'package:rick_and_morty/reusable_widgets/info_card.dart';
 import 'package:rick_and_morty/reusable_widgets/episode_card.dart';
@@ -172,27 +177,64 @@ class CharacterDetailPage extends StatelessWidget {
                   left: 20,
                   right: 20,
                 ),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: character.episode.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        EpisodeCard(
-                          onTap: () {},
-                          number: character.episode[index],
-                          title: "Pilot",
-                          releaseDate: "September 13, 2013",
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Divider(
-                            thickness: 1,
+                child: BlocBuilder<EpisodeBloc, EpisodeState>(
+                  builder: (context, state) {
+                    switch (state.status) {
+                      case EpisodeStatus.initial:
+                        return const Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 120, bottom: 150),
+                            child: CircularProgressIndicator(),
                           ),
-                        ),
-                      ],
-                    );
+                        );
+                      case EpisodeStatus.failure:
+                        return const Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 120, bottom: 150),
+                            child: Text(
+                              'Not Found',
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.grey),
+                            ),
+                          ),
+                        );
+                      case EpisodeStatus.success:
+                        if (state.episodes.isEmpty) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 120, bottom: 150),
+                              child: Text(
+                                'No Episodes',
+                                style:
+                                    TextStyle(fontSize: 20, color: Colors.grey),
+                              ),
+                            ),
+                          );
+                        }
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: character.episode.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                EpisodeCard(
+                                  onTap: () {},
+                                  number: state.episodes[index].episode,
+                                  title: state.episodes[index].name,
+                                  releaseDate: state.episodes[index].airDate,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: Divider(
+                                    thickness: 1,
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                    }
                   },
                 ),
               ),

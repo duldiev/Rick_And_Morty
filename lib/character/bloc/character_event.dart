@@ -30,10 +30,12 @@ class CharacterResetEvet extends CharacterEvent {
   List<Object> get props => [];
 }
 
-class CharacterFetchResidentsEvent extends CharacterEvent {
-  final List<String> residentsURLs;
-  const CharacterFetchResidentsEvent({required this.residentsURLs});
+class ResidentFetchEvent extends CharacterEvent {
+  final List<String> urls;
+  const ResidentFetchEvent({
+    required this.urls,
+  });
 
   @override
-  List<Object> get props => [residentsURLs];
+  List<Object> get props => [urls];
 }

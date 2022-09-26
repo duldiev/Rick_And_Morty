@@ -18,7 +18,9 @@ class CharacterPage extends StatelessWidget {
         BlocProvider<GenderCubit>(create: (_) => GenderCubit()),
         BlocProvider<StatusCubit>(create: (_) => StatusCubit()),
         BlocProvider<CharacterBloc>(
-            create: (_) => CharacterBloc()..add(const CharacterFetchEvent())),
+            create: (_) => CharacterBloc()
+              ..add(CharacterResetEvet())
+              ..add(const CharacterFetchEvent())),
       ],
       child: CharacterView(),
     );
