@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:rick_and_morty/character/enums.dart';
+import 'package:rick_and_morty/character/models/character.dart';
+import 'package:rick_and_morty/enums.dart';
 
 abstract class CharacterEvent extends Equatable {
   const CharacterEvent();
@@ -27,4 +28,12 @@ class CharacterResetEvet extends CharacterEvent {
 
   @override
   List<Object> get props => [];
+}
+
+class CharacterFetchResidentsEvent extends CharacterEvent {
+  final List<String> residentsURLs;
+  const CharacterFetchResidentsEvent({required this.residentsURLs});
+
+  @override
+  List<Object> get props => [residentsURLs];
 }

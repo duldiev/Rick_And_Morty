@@ -5,7 +5,7 @@ import 'package:rick_and_morty/character/bloc/character_state.dart';
 import 'package:rick_and_morty/character/bloc/character_event.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:rick_and_morty/character/enums.dart';
+import 'package:rick_and_morty/enums.dart';
 
 const throttleDuration = Duration(milliseconds: 100);
 
@@ -25,11 +25,41 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
     );
     on<CharacterResetEvet>(
       _onRemoveAll,
+      transformer: throttleDroppable(throttleDuration),
     );
+    on<CharacterFetchResidentsEvent>(_onResidentsFetched);
+  }
+
+  Future<void> _onResidentsFetched(
+      CharacterFetchResidentsEvent event, Emitter<CharacterState> emit) async {
+    try {
+      final residents = await _fetchResident(event.residentsURLs);
+      emit(state.copyWith(
+        status: CharacterStatus.success,
+        characters: residents,
+        hasReachedMax: true,
+      ));
+    } catch (_) {
+      emit(state.copyWith(status: CharacterStatus.failure));
+    }
+  }
+
+  Future<List<CharacterModel>> _fetchResident(List<String> urls) async {
+    int len = urls.length;
+    List<CharacterModel> list = [];
+
+    for (int i = 0; i < len; i++) {
+      final response = await Dio().get(urls[i]);
+      if (response.statusCode == 200) {
+        final result = response.data as Map<String, dynamic>;
+        list.add(CharacterModel.fromJson(result));
+      }
+    }
+    return list;
   }
 
   void _onRemoveAll(CharacterResetEvet event, Emitter<CharacterState> emit) {
-    emit(const CharacterRemoveAll());
+    emit(const CharacterReset());
   }
 
   Future<void> _onCharacterFetched(

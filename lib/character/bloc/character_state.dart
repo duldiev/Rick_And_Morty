@@ -35,8 +35,8 @@ class CharacterState extends Equatable {
   List<Object> get props => [status, characters, hasReachedMax];
 }
 
-class CharacterRemoveAll extends CharacterState {
-  const CharacterRemoveAll()
+class CharacterReset extends CharacterState {
+  const CharacterReset()
       : super(
           status: CharacterStatus.initial,
           characters: const <CharacterModel>[],

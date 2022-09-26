@@ -1,17 +1,17 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rick_and_morty/character/bloc/character_bloc.dart';
+import 'package:rick_and_morty/character/bloc/character_state.dart';
+import 'package:rick_and_morty/character/widgets/character_detail_page.dart';
+import 'package:rick_and_morty/location/models/location.dart';
 import 'package:rick_and_morty/reusable_widgets/character_card.dart';
 
-class LocationDetailPage extends StatefulWidget {
-  final String title;
-  const LocationDetailPage({super.key, required this.title});
+class LocationDetailPage extends StatelessWidget {
+  final LocationModel location;
+  const LocationDetailPage({super.key, required this.location});
 
-  @override
-  State<LocationDetailPage> createState() => _LocationDetailPageState();
-}
-
-class _LocationDetailPageState extends State<LocationDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,26 +34,27 @@ class _LocationDetailPageState extends State<LocationDetailPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: EdgeInsets.only(right: 280),
-                child: MaterialButton(
-                  onPressed: () {
-
-                  },
-                  padding: EdgeInsets.zero,
-                  child: Row(
-                    children: [
-                      Icon(Icons.arrow_back),
-                      SizedBox(width: 10,),
-                      Text("GO BACK"),
-                    ],
-                  ),
+              MaterialButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                padding: EdgeInsets.zero,
+                child: Row(
+                  children: [
+                    Icon(Icons.arrow_back),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text("GO BACK"),
+                  ],
                 ),
               ),
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
               Center(
                 child: Text(
-                  widget.title,
+                  location.name,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 22,
@@ -61,7 +62,9 @@ class _LocationDetailPageState extends State<LocationDetailPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,9 +79,11 @@ class _LocationDetailPageState extends State<LocationDetailPage> {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      SizedBox(height: 8,),
+                      SizedBox(
+                        height: 8,
+                      ),
                       Text(
-                        "Planet",
+                        location.type,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
@@ -97,18 +102,11 @@ class _LocationDetailPageState extends State<LocationDetailPage> {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      SizedBox(height: 8,),
-                      Text(
-                        "Replacement",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black45,
-                        ),
+                      SizedBox(
+                        height: 8,
                       ),
-                      SizedBox(height: 8,),
                       Text(
-                        "Dimension",
+                        location.dimension,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
@@ -119,7 +117,9 @@ class _LocationDetailPageState extends State<LocationDetailPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               Text(
                 "Residents",
                 style: TextStyle(
@@ -127,13 +127,55 @@ class _LocationDetailPageState extends State<LocationDetailPage> {
                   color: Colors.black54,
                 ),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CharacterCard(onPressed: () {}, image: Image.asset("images/rick_image.png", fit: BoxFit.cover,), name: "Rick", species: "Human"),
-                  CharacterCard(onPressed: () {}, image: Image.asset("images/rick_image.png", fit: BoxFit.cover,), name: "Rick", species: "Human"),
-                ],
-              ),
+              BlocBuilder<CharacterBloc, CharacterState>(
+                builder: (context, state) {
+                  switch (state.status) {
+                    case CharacterStatus.initial:
+                      return const Center(
+                          child: Padding(
+                        padding: EdgeInsets.only(top: 100),
+                        child: CircularProgressIndicator(),
+                      ));
+                    case CharacterStatus.failure:
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 120),
+                          child: Text(
+                            'Not Found',
+                            style: TextStyle(fontSize: 20, color: Colors.grey),
+                          ),
+                        ),
+                      );
+                    case CharacterStatus.success:
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: state.characters.length,
+                        itemBuilder: (context, index) {
+                          return CharacterCard(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CharacterDetailPage(
+                                    character: state.characters[index],
+                                  ),
+                                ),
+                              );
+                            },
+                            image: Image(
+                              image:
+                                  NetworkImage(state.characters[index].image),
+                              fit: BoxFit.cover,
+                            ),
+                            name: state.characters[index].name,
+                            species: state.characters[index].species,
+                          );
+                        },
+                      );
+                  }
+                },
+              )
             ],
           ),
         ),

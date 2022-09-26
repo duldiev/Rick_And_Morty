@@ -34,22 +34,19 @@ class CharacterDetailPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: EdgeInsets.only(right: 280),
-                child: MaterialButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  padding: EdgeInsets.zero,
-                  child: Row(
-                    children: const [
-                      Icon(Icons.arrow_back),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text("GO BACK"),
-                    ],
-                  ),
+              MaterialButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                padding: EdgeInsets.zero,
+                child: Row(
+                  children: const [
+                    Icon(Icons.arrow_back),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text("GO BACK"),
+                  ],
                 ),
               ),
               SizedBox(

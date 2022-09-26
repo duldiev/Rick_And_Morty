@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_and_morty/character/bloc/character_bloc.dart';
 import 'package:rick_and_morty/character/bloc/character_event.dart';
-import 'package:rick_and_morty/character/bloc/filter_cubit.dart';
+import 'package:rick_and_morty/filter_cubit.dart';
 import 'package:rick_and_morty/character/widgets/character_view.dart';
 
 class CharacterPage extends StatelessWidget {
