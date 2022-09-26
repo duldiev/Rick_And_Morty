@@ -421,44 +421,46 @@ class CharacterListView extends StatelessWidget {
                         );
                       },
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        top: 40,
-                        bottom: 20,
-                        left: 100,
-                        right: 100,
-                      ),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Species speciesPicked =
-                              context.read<SpeciesCubit>().state;
-                          Gender genderPicked =
-                              context.read<GenderCubit>().state;
-                          Status statusPicked =
-                              context.read<StatusCubit>().state;
-
-                          context.read<CharacterBloc>().add(
-                                CharacterFetchEvent(
-                                  species: speciesPicked,
-                                  gender: genderPicked,
-                                  status: statusPicked,
-                                ),
-                              );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          fixedSize: const Size.fromHeight(40),
-                          backgroundColor: Colors.lightBlueAccent,
+                    if (state.hasReachedMax) ...[
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 40,
+                          bottom: 20,
+                          left: 100,
+                          right: 100,
                         ),
-                        child: const Text(
-                          "Load more",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Species speciesPicked =
+                                context.read<SpeciesCubit>().state;
+                            Gender genderPicked =
+                                context.read<GenderCubit>().state;
+                            Status statusPicked =
+                                context.read<StatusCubit>().state;
+
+                            context.read<CharacterBloc>().add(
+                                  CharacterFetchEvent(
+                                    species: speciesPicked,
+                                    gender: genderPicked,
+                                    status: statusPicked,
+                                  ),
+                                );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            fixedSize: const Size.fromHeight(40),
+                            backgroundColor: Colors.lightBlueAccent,
+                          ),
+                          child: const Text(
+                            "Load more",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ],
                 );
               case CharacterStatus.initial:
